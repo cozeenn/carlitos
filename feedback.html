@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Guest Feedback | Carlito's Private Pool & Venue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #dbeafe 0%, #a5b4fc 60%, #6366f1 100%);
+      color: #23255a;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .feedback-header {
+      text-align: center;
+      margin-top: 4rem;
+      margin-bottom: 2rem;
+    }
+    .feedback-header h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      color: #00f0ff;
+      text-shadow: 0 0 18px #1913cc;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+    .feedback-header p {
+      font-size: 1.2rem;
+      color: #23255a;
+      background: rgba(255,255,255,0.4);
+      border-radius: 12px;
+      display: inline-block;
+      padding: 0.5rem 1.2rem;
+      box-shadow: 0 2px 12px #00f0ff22;
+    }
+    .feedback-list {
+      max-width: 1000px;
+      margin: 0 auto 3rem auto;
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    .feedback-card {
+      background: rgba(255,255,255,0.85);
+      color: #23255a;
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      border-radius: 18px;
+      box-shadow: 0 0 12px #00f0ff22, 0 4px 24px #6366f144;
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feedback-card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 32px #00f0ff88, 0 4px 24px #23255a44;
+    }
+    .feedback-card p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    .feedback-card strong {
+      font-size: 1rem;
+      color: #00f0ff;
+      text-shadow: 0 2px 12px #00f0ff88;
+      letter-spacing: 1px;
+    }
+    .feedback-form {
+      max-width: 500px;
+      margin: 2rem auto 4rem auto;
+      background: rgba(255,255,255,0.7);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #00f0ff22;
+      padding: 2rem;
+      text-align: center;
+    }
+    .feedback-form h2 {
+      color: #00f0ff;
+      font-family: 'Great Vibes', cursive;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 18px #1913cc;
+    }
+    .feedback-form input,
+    .feedback-form textarea {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      border: 1px solid #a5b4fc;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
+    .feedback-form button {
+      background: linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);
+      color: #23255a;
+      border: none;
+      padding: 0.7rem 2rem;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 12px #00f0ff44;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+    }
+    .feedback-form button:hover {
+      background: linear-gradient(90deg,#8784c9 0%, #00f0ff 100%);
+      color: #fff;
+      transform: scale(1.07);
+      box-shadow: 0 4px 24px #00f0ff88;
+    }
+    @media (max-width: 700px) {
+      .feedback-header h1 { font-size: 2rem; }
+      .feedback-list { grid-template-columns: 1fr; }
+      .feedback-form { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="feedback-header">
+    <h1>What Our Guests Say</h1>
+    <p>We value your feedback! Read what our guests say or share your own experience below.</p>
+  </div>
+  <div class="feedback-list">
+    <div class="feedback-card">
+      <p>“Beautiful place! Our family had the best time. The pool was clean, and the staff was super friendly.”</p>
+      <strong>- Jane D.</strong>
+    </div>
+    <div class="feedback-card">
+      <p>“Highly recommend Carlito’s! The venue was spacious and perfect for our event.”</p>
+      <strong>- Mark R.</strong>
+    </div>
+    <div class="feedback-card">
+      <p>“A relaxing escape from the city. Everything was well-maintained and peaceful.”</p>
+      <strong>- Ana L.</strong>
+    </div>
+  </div>
+  <div class="feedback-form">
+    <h2>Share Your Feedback</h2>
+    <form method="post" action="submit_feedback.php">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <textarea name="feedback" rows="4" placeholder="Your Feedback" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+    <a href="index.html" class="back-link" style="margin-top:2rem;display:inline-block;color:#00f0ff;text-decoration:none;font-weight:bold;">← Back to Homepage</a>
+  </div>
+  <footer>
+    <p>&copy; 2025 Carlito's Private Pool & Venue. All rights reserved.</p>
+    <div class="socials">
+      <a href="https://www.facebook.com/profile.php?id=100063725301555" target="_blank">Facebook</a> |
+      <a href="https://www.facebook.com/profile.php?id=100063725301555" target="_blank">Instagram</a>
+    </div>
+  </footer>
+</body>
+</html>

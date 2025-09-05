@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Villa Details - Carlito’s Private Pool & Venue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #23255a;
+      --cyan: #00f0ff;
+      --lav: #9698d4;
+      --text: #23255a;
+      --muted: #6b7280;
+      --bg: linear-gradient(120deg, #dbeafe 0%, #a5b4fc 60%, #6366f1 100%);
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(99, 102, 241, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #a5b4fc;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem; color: #e0e7ff;
+      box-shadow: 0 4px 24px #6366f144;
+    }
+    header .brand { display: flex; gap: 0.6rem; align-items: center; font-weight: 600; }
+    header .brand img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 0 8px #00f0ff88); }
+    header nav a { margin-left: 1rem; font-weight: 600; }
+
+    .hero {
+      position: relative;
+      height: 44vh; min-height: 320px;
+      display: grid; place-items: center;
+      overflow: hidden;
+      box-shadow: 0 6px 28px #00f0ff33;
+    }
+    .hero img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); }
+    .hero .overlay {
+      position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.5));
+    }
+    .hero .title {
+      position: absolute; bottom: 22px; left: 22px;
+      color: #e0e7ff; text-shadow: 0 2px 16px #0009;
+      font-family: 'Great Vibes', cursive; font-size: 2.4rem;
+      background: linear-gradient(90deg, var(--cyan), #8784c9);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .container { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
+    .grid { display: grid; gap: 1.5rem; grid-template-columns: 1.5fr 1fr; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: rgba(255,255,255,0.9);
+      border-radius: 16px; box-shadow: 0 8px 32px #23255a22;
+      padding: 1rem;
+    }
+    .section-title { color: var(--cyan); font-size: 1.6rem; margin: 0.4rem 0 1rem; }
+    .muted { color: var(--muted); }
+
+    .pill { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+    .pill.good { background: #d1fae5; color: #065f46; }
+    .pill.bad { background: #fee2e2; color: #991b1b; }
+
+    .details ul { list-style: none; padding: 0; margin: 0; }
+    .details li { padding: 0.35rem 0; display: flex; justify-content: space-between; border-bottom: 1px dashed #e5e7eb; }
+    .details li:last-child { border-bottom: 0; }
+
+    .amenities { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .amenities .amenity { background: #f1f5f9; border-radius: 12px; padding: 0.6rem 0.8rem; box-shadow: inset 0 1px 0 #fff; }
+
+    .calendar { user-select: none; }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .cal-header .month { font-weight: 700; }
+    .cal-header .nav { display: flex; gap: 0.4rem; }
+    .btn { background: linear-gradient(90deg, var(--cyan) 0%, #8784c9 100%); color: #23255a; border: none; border-radius: 12px; padding: 0.45rem 0.8rem; font-weight: 700; cursor: pointer; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .dow { text-align: center; font-size: 0.85rem; font-weight: 700; color: #475569; padding: 4px 0; }
+    .cell { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 6px; min-height: 44px; text-align: right; position: relative; }
+    .cell .d { position: absolute; top: 6px; right: 8px; font-size: 0.85rem; color: #0f172a; }
+    .cell.empty { background: transparent; border: none; }
+    .cell.past { opacity: 0.45; }
+    .cell.booked { background: #fee2e2; border-color: #fecaca; }
+    .cell.available { background: #ecfeff; border-color: #bae6fd; }
+    .cell.in-range { background: #e0e7ff; border-color: #c7d2fe; }
+    .legend { display: flex; gap: 0.8rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+    .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; }
+
+    .pricing { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .price { background: #f8fafc; border-radius: 12px; padding: 0.7rem 0.8rem; box-shadow: inset 0 1px 0 #fff; }
+    .price .label { color: #475569; font-size: 0.9rem; }
+    .price .value { font-weight: 800; font-size: 1.2rem; }
+
+    .booking-cta { display: grid; gap: 0.6rem; grid-template-columns: 1fr auto; align-items: center; }
+    @media (max-width: 520px) { .booking-cta { grid-template-columns: 1fr; } }
+    .note { font-size: 0.85rem; color: #475569; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="507955166_1837138306852629_7127233118647401514_n-removebg-preview.png" alt="Carlito's Logo" />
+      <a href="index.html">Carlito's Private Pool & Venue</a>
+    </div>
+    <nav>
+      <a href="index.html#pools">Back to Gallery</a>
+      <a href="booking.php">General Booking</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img id="heroImage" src="" alt="Villa hero" />
+    <div class="overlay"></div>
+    <div class="title" id="heroTitle">Villa</div>
+  </section>
+
+  <main class="container">
+    <div class="grid">
+      <div class="card">
+        <h2 class="section-title" id="villaTitle">Villa</h2>
+        <p class="muted" id="villaDesc"></p>
+
+        <h3 class="section-title" style="margin-top:1.2rem;">Room Details</h3>
+        <div class="details" id="roomDetails"></div>
+
+        <h3 class="section-title" style="margin-top:1.2rem;">Amenities</h3>
+        <div class="amenities" id="amenities"></div>
+
+        <h3 class="section-title" style="margin-top:1.2rem;">Key Features</h3>
+        <div class="amenities" id="features"></div>
+
+        <h3 class="section-title" style="margin-top:1.2rem;">Pricing</h3>
+        <div class="pricing" id="pricing"></div>
+      </div>
+
+      <div class="card calendar">
+        <div class="cal-header">
+          <div>
+            <div class="month" id="calMonth">Month YYYY</div>
+            <div class="muted" style="font-size:0.9rem;">Select your Check-in and Check-out dates</div>
+          </div>
+          <div class="nav">
+            <button class="btn" id="prevMonth" aria-label="Previous month">◀</button>
+            <button class="btn" id="nextMonth" aria-label="Next month">▶</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calGrid">
+          <!-- Calendar will render here -->
+        </div>
+        <div class="legend">
+          <span><i style="background:#ecfeff;border:1px solid #bae6fd;"></i> Available</span>
+          <span><i style="background:#fee2e2;border:1px solid #fecaca;"></i> Booked</span>
+          <span><i style="background:#e0e7ff;border:1px solid #c7d2fe;"></i> Selected</span>
+        </div>
+
+        <div style="height: 10px;"></div>
+        <div class="booking-cta">
+          <div class="note" id="selectionNote">No dates selected.</div>
+          <a id="bookBtn" class="btn" href="#" aria-disabled="true">Proceed to Booking</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Data model for Villas (edit values as needed)
+    const villas = {
+      1: {
+        id: 1,
+        name: 'Villa A',
+        image: 'images/505918272_1415084713148502_3851584046135949236_n.jpg',
+        desc: 'Spacious family-friendly villa with private pool and lounge. Perfect for celebrations and staycations.',
+        rooms: [
+          { label: 'Bedrooms', value: '3 rooms (2 queen, 1 twin bunks)' },
+          { label: 'Bathrooms', value: '2' },
+          { label: 'Max Guests', value: '15-20 pax' },
+        ],
+        amenities: ['Private Pool', 'Karaoke', 'Videoke', 'BBQ Grill', 'Free WiFi', 'Air Conditioning', 'Parking'],
+        features: ['Kid-friendly Pool', 'Covered Lounge Area', 'Outdoor Grill Space', 'Strong WiFi Coverage', 'Free On-site Parking', 'Party-ready Sound Setup'],
+        pricing: [
+          { label: 'Day Rate (Weekday)', value: '₱6,500' },
+          { label: 'Night Rate (Weekday)', value: '₱7,500' },
+          { label: 'Day Rate (Weekend)', value: '₱7,500' },
+          { label: 'Night Rate (Weekend)', value: '₱8,500' },
+        ],
+        booked: [ ] // ISO dates e.g., '2025-09-14'
+      },
+      2: {
+        id: 2,
+        name: 'Villa B',
+        image: 'images/514061795_1119778453536134_6257933900435055225_n.jpg',
+        desc: 'Cozy villa ideal for intimate gatherings. Enjoy a relaxing pool and comfortable rooms.',
+        rooms: [
+          { label: 'Bedrooms', value: '2 rooms (1 queen, 1 twin bunks)' },
+          { label: 'Bathrooms', value: '2' },
+          { label: 'Max Guests', value: '12-15 pax' },
+        ],
+        amenities: ['Private Pool', 'Mini Bar', 'Karaoke', 'Free WiFi', 'Air Conditioning', 'Parking'],
+        features: ['Cozy Lounge', 'Mini Bar Station', 'Free Parking', 'Great for Small Gatherings'],
+        pricing: [
+          { label: 'Day Rate (Weekday)', value: '₱5,500' },
+          { label: 'Night Rate (Weekday)', value: '₱6,500' },
+          { label: 'Day Rate (Weekend)', value: '₱6,500' },
+          { label: 'Night Rate (Weekend)', value: '₱7,500' },
+        ],
+        booked: [ ]
+      },
+      3: {
+        id: 3,
+        name: 'Villa C',
+        image: 'images/509751278_720359777619510_6903843874210250799_n.jpg',
+        desc: 'Modern villa with vibrant pool lighting and spacious lounge with sound system.',
+        rooms: [
+          { label: 'Bedrooms', value: '3 rooms (2 queen, 1 twin bunks)' },
+          { label: 'Bathrooms', value: '3' },
+          { label: 'Max Guests', value: '18-22 pax' },
+        ],
+        amenities: ['Private Pool', 'Karaoke', 'Free WiFi', 'Air Conditioning', 'Parking', 'Outdoor Dining'],
+        features: ['Vibrant Pool Lighting', 'Spacious Lounge', 'Outdoor Dining Area', 'Great for Events'],
+        pricing: [
+          { label: 'Day Rate (Weekday)', value: '₱6,800' },
+          { label: 'Night Rate (Weekday)', value: '₱7,800' },
+          { label: 'Day Rate (Weekend)', value: '₱7,800' },
+          { label: 'Night Rate (Weekend)', value: '₱8,800' },
+        ],
+        booked: [ ]
+      },
+      4: {
+        id: 4,
+        name: 'Villa D',
+        image: 'images/513178250_1071925878222879_7385441827813418646_n.jpg',
+        desc: 'Chic villa with outdoor lounge, great for gatherings and celebrations.',
+        rooms: [
+          { label: 'Bedrooms', value: '2 rooms (2 queen)' },
+          { label: 'Bathrooms', value: '2' },
+          { label: 'Max Guests', value: '10-14 pax' },
+        ],
+        amenities: ['Private Pool', 'Free WiFi', 'Air Conditioning', 'Parking', 'Outdoor Seating'],
+        features: ['Outdoor Lounge', 'Cozy Seating Area', 'Great for Gatherings'],
+        pricing: [
+          { label: 'Day Rate (Weekday)', value: '₱5,000' },
+          { label: 'Night Rate (Weekday)', value: '₱6,000' },
+          { label: 'Day Rate (Weekend)', value: '₱6,000' },
+          { label: 'Night Rate (Weekend)', value: '₱7,000' },
+        ],
+        booked: [ ]
+      },
+      5: {
+        id: 5,
+        name: 'Villa E',
+        image: 'images/513240803_1246604110341993_53881891025697309_n.jpg',
+        desc: 'Premium villa with ample space and cozy rooms, perfect for large groups.',
+        rooms: [
+          { label: 'Bedrooms', value: '4 rooms (3 queen, 1 twin bunks)' },
+          { label: 'Bathrooms', value: '3' },
+          { label: 'Max Guests', value: '20-25 pax' },
+        ],
+        amenities: ['Private Pool', 'Karaoke', 'Free WiFi', 'Air Conditioning', 'Parking', 'Grill Area'],
+        features: ['Large Group Friendly', 'Grill Area', 'Strong WiFi', 'Ample Parking'],
+        pricing: [
+          { label: 'Day Rate (Weekday)', value: '₱7,000' },
+          { label: 'Night Rate (Weekday)', value: '₱8,000' },
+          { label: 'Day Rate (Weekend)', value: '₱8,000' },
+          { label: 'Night Rate (Weekend)', value: '₱9,000' },
+        ],
+        booked: [ ]
+      },
+    };
+
+    const qs = new URLSearchParams(location.search);
+    const id = parseInt(qs.get('id') || '0', 10);
+    const villa = villas[id] || villas[1];
+
+    // Populate hero and content
+    document.getElementById('heroImage').src = villa.image;
+    document.getElementById('heroTitle').textContent = villa.name;
+    document.getElementById('villaTitle').textContent = villa.name;
+    document.getElementById('villaDesc').textContent = villa.desc;
+
+    const roomDetails = document.getElementById('roomDetails');
+    const detailsList = document.createElement('ul');
+    villa.rooms.forEach(r => {
+      const li = document.createElement('li');
+      const l = document.createElement('span'); l.textContent = r.label;
+      const v = document.createElement('span'); v.textContent = r.value;
+      li.appendChild(l); li.appendChild(v);
+      detailsList.appendChild(li);
+    });
+    roomDetails.appendChild(detailsList);
+
+    const amenities = document.getElementById('amenities');
+    villa.amenities.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'amenity';
+      div.textContent = a;
+      amenities.appendChild(div);
+    });
+
+    const featuresEl = document.getElementById('features');
+    if (Array.isArray(villa.features)) {
+      villa.features.forEach(f => {
+        const div = document.createElement('div');
+        div.className = 'amenity';
+        div.textContent = f;
+        featuresEl.appendChild(div);
+      });
+    }
+
+    const pricing = document.getElementById('pricing');
+    villa.pricing.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'price';
+      const l = document.createElement('div'); l.className = 'label'; l.textContent = p.label;
+      const v = document.createElement('div'); v.className = 'value'; v.textContent = p.value;
+      div.appendChild(l); div.appendChild(v);
+      pricing.appendChild(div);
+    });
+
+    // Calendar rendering
+    const calMonth = document.getElementById('calMonth');
+    const calGrid = document.getElementById('calGrid');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+
+    let viewDate = new Date();
+    viewDate.setDate(1);
+
+    let selStart = null; // Date
+    let selEnd = null;   // Date
+
+    const fmtISO = (d) => d.toISOString().slice(0,10);
+    const isSameDay = (a, b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+    const isBefore = (a, b) => a.setHours(0,0,0,0) < b.setHours(0,0,0,0);
+    const isAfter = (a, b) => a.setHours(0,0,0,0) > b.setHours(0,0,0,0);
+    const inRange = (d, a, b) => a && b && !isBefore(d, a) && !isAfter(d, b);
+
+    const bookedSet = new Set(villa.booked);
+
+    function renderCalendar() {
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth();
+      const today = new Date(); today.setHours(0,0,0,0);
+
+      calMonth.textContent = `${viewDate.toLocaleString('default', { month: 'long' })} ${year}`;
+
+      // Clear grid
+      calGrid.innerHTML = '';
+
+      const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      for (const d of dow) {
+        const el = document.createElement('div');
+        el.className = 'dow'; el.textContent = d;
+        calGrid.appendChild(el);
+      }
+
+      const firstDayIdx = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+
+      for (let i=0;i<firstDayIdx;i++) {
+        const empty = document.createElement('div');
+        empty.className = 'cell empty';
+        calGrid.appendChild(empty);
+      }
+
+      for (let day=1; day<=daysInMonth; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const d = new Date(year, month, day);
+        const iso = fmtISO(d);
+
+        const num = document.createElement('div'); num.className = 'd'; num.textContent = day; cell.appendChild(num);
+
+        const past = isBefore(new Date(iso), today);
+        const isBooked = bookedSet.has(iso);
+        const selected = selStart && isSameDay(d, selStart) || selEnd && isSameDay(d, selEnd);
+        const inside = inRange(new Date(iso), selStart, selEnd);
+
+        if (past) cell.classList.add('past');
+        if (isBooked) cell.classList.add('booked');
+        if (!isBooked && !past) cell.classList.add('available');
+        if (selected || inside) cell.classList.add('in-range');
+
+        cell.addEventListener('click', () => {
+          if (past || isBooked) return;
+          // First click sets start; second sets end; third resets
+          if (!selStart || selStart && selEnd) {
+            selStart = new Date(iso); selEnd = null;
+          } else if (!selEnd) {
+            const candidateEnd = new Date(iso);
+            if (isBefore(candidateEnd, selStart)) {
+              // swap
+              selEnd = selStart; selStart = candidateEnd;
+            } else {
+              selEnd = candidateEnd;
+            }
+          }
+          // Prevent ranges that include booked dates
+          if (selStart && selEnd) {
+            let ok = true;
+            const cur = new Date(selStart);
+            while (!isAfter(cur, selEnd)) {
+              if (bookedSet.has(fmtISO(cur))) { ok = false; break; }
+              cur.setDate(cur.getDate()+1);
+            }
+            if (!ok) { selStart = new Date(iso); selEnd = null; }
+          }
+          updateCTA();
+          renderCalendar();
+        });
+
+        calGrid.appendChild(cell);
+      }
+
+      updateCTA();
+    }
+
+    function updateCTA() {
+      const note = document.getElementById('selectionNote');
+      const btn = document.getElementById('bookBtn');
+      if (selStart && selEnd) {
+        const s = fmtISO(selStart); const e = fmtISO(selEnd);
+        note.textContent = `${villa.name}: ${s} → ${e}`;
+        btn.setAttribute('aria-disabled', 'false');
+        btn.href = `booking.php?villa_id=${encodeURIComponent(villa.id)}&villa=${encodeURIComponent(villa.name)}&date_start=${encodeURIComponent(s)}&date_end=${encodeURIComponent(e)}`;
+      } else if (selStart) {
+        note.textContent = `${villa.name}: Check-in ${fmtISO(selStart)} (select check-out)`;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.href = '#';
+      } else {
+        note.textContent = 'No dates selected.';
+        btn.setAttribute('aria-disabled', 'true');
+        btn.href = '#';
+      }
+    }
+
+    document.getElementById('prevMonth').addEventListener('click', () => {
+      viewDate.setMonth(viewDate.getMonth()-1);
+      renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+      viewDate.setMonth(viewDate.getMonth()+1);
+      renderCalendar();
+    });
+
+    renderCalendar();
+  </script>
+</body>
+</html>

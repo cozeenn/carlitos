@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carlito’s Private Pool & Venue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@5/dist/photo-sphere-viewer.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@5/dist/photo-sphere-viewer.min.css" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #dbeafe 0%, #a5b4fc 60%, #6366f1 100%);
+      color: #23255a;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    #bg-360 {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      filter: brightness(0.75) blur(2px);
+      transition: filter 0.5s;
+    }
+    nav {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(99, 102, 241, 0.92); /* Indigo with transparency */
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem 0;
+      z-index: 999;
+      box-shadow: 0 4px 24px #6366f144;
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #a5b4fc;
+      animation: navFadeIn 1.2s cubic-bezier(.77,0,.18,1) forwards;
+    }
+    @keyframes navFadeIn {
+      from { opacity: 0; transform: translateY(-40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    nav a {
+      color: #e0e7ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 0 transparent;
+    }
+    nav a:hover {
+      background: linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);
+      color: #23255a;
+      box-shadow: 0 2px 12px #00f0ff44;
+    }
+    .preloader {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(120deg,#23255a 0%, #00f0ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeOutPreloader 2s 1.5s forwards;
+    }
+    .preloader h1 {
+      font-size: 3rem;
+      font-family: 'Great Vibes', cursive;
+      color: #fff;
+      text-shadow: 0 0 24px #00f0ff;
+      animation: pulse 1.5s infinite;
+      letter-spacing: 2px;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    @keyframes fadeOutPreloader {
+      to { opacity: 0; visibility: hidden; }
+    }
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      position: relative;
+      z-index: 2;
+      animation: heroFadeIn 1.2s cubic-bezier(.77,0,.18,1) 0.5s forwards;
+      opacity: 0;
+    }
+    @keyframes heroFadeIn {
+      to { opacity: 1; }
+    }
+    .logo {
+      display: block;
+      margin: 0 auto;
+      width: 420px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 24px #00f0ff88);
+      animation: floatLogo 3s infinite ease-in-out alternate;
+    }
+    @keyframes floatLogo {
+      0% { transform: translateY(0);}
+      100% { transform: translateY(-18px);}
+    }
+    .section-title,
+    .hero-content h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4.2rem;
+      color: #00f0ff;
+      text-shadow: 0 0 18px #1913cc;
+      letter-spacing: 2px;
+      animation: textPop 1.2s cubic-bezier(.77,0,.18,1) 0.7s forwards;
+      opacity: 0;
+    }
+    @keyframes textPop {
+      to { opacity: 1; transform: scale(1.04);}
+    }
+    @media (max-width: 700px) {
+      .logo { width: 220px; }
+      .section-title,
+      .hero-content h1 { font-size: 2.2rem; }
+      .gallery-grid img { height: 160px; }
+      section { padding: 2rem 0.5rem; }
+      .booking-form { margin: 2rem auto; }
+    }
+    .hero-content p {
+      font-size: 1.5rem;
+      color: #23255a;
+      margin: 1rem 0;
+      background: rgba(255,255,255,0.4);
+      border-radius: 12px;
+      padding: 0.5rem 1.2rem;
+      display: inline-block;
+      box-shadow: 0 2px 12px #00f0ff22;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1s forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .btn {
+      background: linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);
+      border: none;
+      padding: 0.7rem 2rem;
+      border-radius: 30px;
+      color: #23255a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 12px #00f0ff44;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+      margin-top: 1.2rem;
+      cursor: pointer;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1.2s forwards;
+      opacity: 0;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg,#8784c9 0%, #00f0ff 100%);
+      color: #fff;
+      transform: scale(1.07);
+      box-shadow: 0 4px 24px #00f0ff88;
+    }
+    section {
+      padding: 4rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .gallery-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      max-width: 1200px;
+      margin: 0 auto;
+      perspective: 1200px;
+    }
+    .gallery-grid a {
+      display: block;
+      perspective: 800px;
+      transition: transform 0.3s;
+    }
+    .gallery-grid img {
+      width: 100%;
+      border-radius: 18px;
+      object-fit: cover;
+      height: 280px;
+      box-shadow: 0 4px 24px #00f0ff33, 0 2px 12px #23255a22;
+      transition: transform 0.4s, box-shadow 0.4s, filter 0.3s;
+      filter: brightness(0.95) drop-shadow(0 0 8px #00f0ff44);
+      cursor: pointer;
+      transform-style: preserve-3d;
+    }
+    .gallery-grid a:hover img {
+      transform: scale(1.08) rotateY(12deg) rotateX(4deg);
+      box-shadow: 0 8px 32px #00f0ff88, 0 4px 24px #23255a44;
+      filter: brightness(1.05) drop-shadow(0 0 24px #00f0ff88);
+    }
+    .gallery-grid a:active img {
+      transform: scale(0.98) rotateY(-8deg) rotateX(-2deg);
+    }
+    .pano-home-section {
+      margin-top: 3rem;
+      margin-bottom: 4rem;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px #00f0ff33;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1.2s forwards;
+      opacity: 0;
+    }
+    .booking-form {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      margin: 3rem auto;
+      max-width: 600px;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #00f0ff22;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1.4s forwards;
+      opacity: 0;
+    }
+    .booking-form h2 {
+      text-align: center;
+      color: #00f0ff;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    .booking-form .btn {
+      display: inline-block;
+      margin: 1rem auto;
+    }
+    .faq-container {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 4px 24px #00f0ff22;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1.6s forwards;
+      opacity: 0;
+    }
+    .faq-item {
+      margin-bottom: 1.2rem;
+      transition: box-shadow 0.3s;
+    }
+    .faq-item.open {
+      box-shadow: 0 2px 12px #00f0ff44;
+    }
+    .faq-question {
+      background: linear-gradient(90deg,#9698d4 0%, #00f0ff 100%);
+      color: #23255a;
+      border: none;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: left;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      box-shadow: 0px 0px 15px #cbd5e1;
+    }
+    .faq-question:hover {
+      background: linear-gradient(90deg,#00f0ff 0%, #9698d4 100%);
+      color: #fff;
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      background: #e0e7ff;
+      color: #23255a;
+      padding: 0 1rem;
+      margin-top: 0.3rem;
+      border-radius: 12px;
+      transition: max-height 0.3s, padding 0.3s;
+      box-shadow: 0 2px 12px #00f0ff22;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding: 0.75rem 1rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #e0e7ff;
+      background: linear-gradient(90deg,#23255a 0%, #00f0ff 100%);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      box-shadow: 0 -2px 12px #00f0ff22;
+      margin-top: 4rem;
+      animation: fadeInUp 1.2s cubic-bezier(.77,0,.18,1) 1.8s forwards;
+      opacity: 0;
+    }
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: #00f0ff;
+      text-shadow: 0 0 8px #00f0ff;
+    }
+    /* 3D Button Effect */
+    .btn {
+      box-shadow: 0 4px 24px #00f0ff44, 0 2px 12px #23255a22;
+      perspective: 400px;
+      transform-style: preserve-3d;
+    }
+    .btn:active {
+      transform: scale(0.97) rotateX(8deg);
+      box-shadow: 0 2px 8px #00f0ff22;
+    }
+  </style>
+</head>
+<body>
+  <div id="bg-360"></div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#pools">Pools</a>
+    <a href="#booking">Booking</a>
+    <a href="#contact">Contact</a>
+    <a href="feedback.html">Give Feedback</a>
+  </nav>
+  <div class="preloader">
+    <h1>Loading Carlito's...</h1>
+  </div>
+  <header class="hero">
+    <img src="507955166_1837138306852629_7127233118647401514_n-removebg-preview.png" 
+         alt="Carlito's Logo" class="logo" />
+    <div class="hero-content">
+      <h1>Carlito's Private Pool & Venue</h1>
+      <p>Relax. Swim. Celebrate.</p>
+      <a href="booking.php" class="btn">Book Now</a>
+    </div>
+  </header>
+  <section id="about">
+    <h2 class="section-title">About Us</h2>
+    <p style="max-width: 800px; margin: 0 auto; text-align: center; background:rgba(255,255,255,0.5); border-radius:12px; padding:1rem; box-shadow:0 2px 12px #00f0ff22;">
+      Carlito's Private Pool & Venue is a relaxing getaway spot perfect for families, friends, and special events. Our facilities offer scenic views, sparkling pools, and a refreshing ambiance that welcomes everyone.
+    </p>
+  </section>
+  <section id="gallery">
+    <h2 class="section-title">Pool Gallery</h2>
+    <div class="gallery-label" style="text-align:center; margin-bottom:1.5rem;">
+      <span style="background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%); color:#23255a; font-weight:bold; font-size:1.2rem; padding:0.5rem 2rem; border-radius:20px; box-shadow:0 2px 12px #00f0ff44; display:inline-block;">
+        Pools Available: 5
+      </span>
+    </div>
+    <div class="gallery-grid">
+      <a href="villa-details.html?id=1" class="gallery-item">
+        <div class="pool-label" style="position:absolute;top:12px;left:12px;background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);color:#23255a;font-weight:bold;font-size:1rem;padding:0.3rem 1rem;border-radius:14px;box-shadow:0 2px 12px #00f0ff44;z-index:2;">
+          Villa A
+        </div>
+        <img src="images/505918272_1415084713148502_3851584046135949236_n.jpg" alt="Pool 1">
+        <div class="gallery-caption">Pool 1</div>
+      </a>
+      <a href="villa-details.html?id=2" class="gallery-item">
+        <div class="pool-label" style="position:absolute;top:12px;left:12px;background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);color:#23255a;font-weight:bold;font-size:1rem;padding:0.3rem 1rem;border-radius:14px;box-shadow:0 2px 12px #00f0ff44;z-index:2;">
+          Villa B
+        </div>
+        <img src="images/514061795_1119778453536134_6257933900435055225_n.jpg" alt="Pool 2">
+        <div class="gallery-caption">Pool 2</div>
+      </a>
+      <a href="villa-details.html?id=3" class="gallery-item">
+        <div class="pool-label" style="position:absolute;top:12px;left:12px;background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);color:#23255a;font-weight:bold;font-size:1rem;padding:0.3rem 1rem;border-radius:14px;box-shadow:0 2px 12px #00f0ff44;z-index:2;">
+          Villa C
+        </div>
+        <img src="images/509751278_720359777619510_6903843874210250799_n.jpg" alt="Pool 3">
+        <div class="gallery-caption">Pool 3</div>
+      </a>
+      <a href="villa-details.html?id=4" class="gallery-item">
+        <div class="pool-label" style="position:absolute;top:12px;left:12px;background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);color:#23255a;font-weight:bold;font-size:1rem;padding:0.3rem 1rem;border-radius:14px;box-shadow:0 2px 12px #00f0ff44;z-index:2;">
+          Villa D
+        </div>
+        <img src="images/513178250_1071925878222879_7385441827813418646_n.jpg" alt="Pool 4">
+        <div class="gallery-caption">Pool 4</div>
+      </a>
+      <a href="villa-details.html?id=5" class="gallery-item">
+        <div class="pool-label" style="position:absolute;top:12px;left:12px;background:linear-gradient(90deg,#00f0ff 0%, #8784c9 100%);color:#23255a;font-weight:bold;font-size:1rem;padding:0.3rem 1rem;border-radius:14px;box-shadow:0 2px 12px #00f0ff44;z-index:2;">
+          Villa E
+        </div>
+        <img src="images/513240803_1246604110341993_53881891025697309_n.jpg" alt="Pool 5">
+        <div class="gallery-caption">Pool 5</div>
+      </a>
+    </div>
+  </section>
+  <section class="pano-home-section">
+    <iframe width="100%" height="640" src="https://embed.ricoh360.com/e96b9143-647a-4d74-b6f9-c06ca602212e" frameborder="0" allowfullscreen loading="lazy" style="border-radius:18px;"></iframe>
+  </section>
+  <section id="booking" class="booking-form">
+    <h2 class="section-title">Book Your Stay</h2>
+    <div style="text-align:center;">
+      <a href="booking.php" class="btn">Go to Reservation Form</a>
+    </div>
+  </section>
+  <section id="faq">
+    <h2 class="section-title">Things People Ask Us</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <button class="faq-question">How do I make a booking?</button>
+        <div class="faq-answer">Click on "Book Now" and fill out the form. Upload your GCash payment to confirm.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What are your check-in/check-out times?</button>
+        <div class="faq-answer">Check-in is from 9 AM, and check-out is by 6 PM. Early/late times can be requested.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can we bring food and drinks?</button>
+        <div class="faq-answer">Yes! You can bring your own food, drinks, and party essentials.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Do you accept payments other than GCash?</button>
+        <div class="faq-answer">Currently, we accept GCash only. Future updates may include other methods.</div>
+      </div>
+    </div>
+  </section>
+  <section id="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <p style="text-align: center; background:rgba(255,255,255,0.5); border-radius:12px; padding:1rem; box-shadow:0 2px 12px #00f0ff22;">
+      For inquiries and bookings, reach out via our social media or email: carlitospool@email.com
+    </p>
+  </section>
+  <section id="feedback" style="padding: 4rem 2rem; background: rgba(255, 255, 255, 0.04); width: 100%; background-color: #9698d4;">
+    <h2 class="section-title">What Our Guests Say</h2>
+    <div style="max-width: 1000px; margin: 0 auto; display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+      <div style="background: white; color: #333; padding: 1.5rem; border-radius: 18px; box-shadow: 0 0 12px #00f0ff22;">
+        <p>“Beautiful place! Our family had the best time. The pool was clean, and the staff was super friendly.”</p>
+        <strong>- Jane D.</strong>
+      </div>
+      <div style="background: white; color: #333; padding: 1.5rem; border-radius: 18px; box-shadow: 0 0 12px #00f0ff22;">
+        <p>“Highly recommend Carlito’s! The venue was spacious and perfect for our event.”</p>
+        <strong>- Mark R.</strong>
+      </div>
+      <div style="background: white; color: #333; padding: 1.5rem; border-radius: 18px; box-shadow: 0 0 12px #00f0ff22;">
+        <p>“A relaxing escape from the city. Everything was well-maintained and peaceful.”</p>
+        <strong>- Ana L.</strong>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>&copy; 2025 Carlito's Private Pool & Venue. All rights reserved.</p>
+    <div class="socials">
+      <a href="https://www.facebook.com/profile.php?id=100063725301555" target="_blank">Facebook</a> |
+      <a href="https://www.facebook.com/profile.php?id=100063725301555" target="_blank">Instagram</a>
+    </div>
+  </footer>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+    window.addEventListener("load", () => {
+      gsap.to(".preloader", {
+        opacity: 0,
+        duration: 1,
+        onComplete: () => document.querySelector(".preloader").style.display = "none"
+      });
+
+      // Initialize PhotoSphere Viewer after DOM and images are loaded
+      const viewer = new PhotoSphereViewer.Viewer({
+        container: document.querySelector('#bg-360'),
+        panorama: 'images/IMG_6323.JPG', // replace with your panorama file
+        navbar: [],
+        mousewheel: false,
+        touchmoveTwoFingers: true,
+        autorotateDelay: 500,
+        autorotateIdle: true,
+        autorotateSpeed: '1rpm'
+      });
+
+      // Interactive 3D tilt effect for hero logo
+      const logo = document.querySelector('.logo');
+      logo.addEventListener('mousemove', e => {
+        const rect = logo.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width/2;
+        const y = e.clientY - rect.top - rect.height/2;
+        logo.style.transform = `translateY(-18px) rotateY(${x/20}deg) rotateX(${-y/20}deg)`;
+      });
+      logo.addEventListener('mouseleave', () => {
+        logo.style.transform = 'translateY(-18px)';
+      });
+
+      // Parallax effect for hero background
+      document.addEventListener('mousemove', e => {
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+        document.getElementById('bg-360').style.filter = `brightness(0.7) blur(2px) drop-shadow(${x*40}px ${y*40}px 40px #00f0ff88)`;
+      });
+    });
+
+    gsap.to(".hero-content", {
+      opacity: 0,
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+
+    gsap.utils.toArray(".story-panel").forEach((panel) => {
+      gsap.from(panel, {
+        y: 150,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: panel,
+          start: "top 80%",
+          end: "top 60%",
+          scrub: true
+        }
+      });
+    });
+
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.parentElement;
+        item.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>
